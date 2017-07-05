@@ -87,7 +87,7 @@ describe('subscriptions', () => {
       namespace: '-',
       state: {},
       subscriptions: {
-        setup({ dispatch }, done) {
+        setup(_obj, done) {
           done('subscription error');
         },
       },
@@ -107,7 +107,7 @@ describe('subscriptions', () => {
       namespace: '-',
       state: {},
       subscriptions: {
-        setup({ dispatch }, done) {
+        setup(_obj, done) {
           setTimeout(() => {
             done('subscription error');
           }, 100);

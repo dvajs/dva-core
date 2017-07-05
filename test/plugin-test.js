@@ -1,5 +1,5 @@
 import expect from 'expect';
-import Plugin from '../src/plugin';
+import Plugin from '../src/Plugin';
 
 describe('plugin', () => {
   it('basic', () => {
