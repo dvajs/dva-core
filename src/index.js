@@ -54,7 +54,9 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
    * @param m {Object} model to register
    */
   function model(m) {
-    checkModel(m, app._models);
+    if (process.env.NODE_ENV !== 'production') {
+      checkModel(m, app._models);
+    }
     app._models.push(prefixNamespace(m));
   }
 
