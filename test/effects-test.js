@@ -4,28 +4,6 @@ import { create } from '../src/index';
 const delay = timeout => new Promise(resolve => setTimeout(resolve, timeout));
 
 describe('effects', () => {
-  it('type error', () => {
-    const app = create();
-    expect(() => {
-      app.model({
-        namespace: '_',
-        effects: [],
-      });
-    }).toThrow(/\[app\.model\] effects should be undefined or plain object/);
-    expect(() => {
-      app.model({
-        namespace: '_',
-        effects: '_',
-      });
-    }).toThrow(/\[app\.model\] effects should be undefined or plain object/);
-    expect(() => {
-      app.model({
-        namespace: '_',
-        effects: {},
-      });
-    }).toNotThrow();
-  });
-
   it('put action', (done) => {
     const app = create();
     app.model({

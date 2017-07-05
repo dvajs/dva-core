@@ -2,27 +2,6 @@ import expect from 'expect';
 import { create } from '../src/index';
 
 describe('subscriptions', () => {
-  it('type error', () => {
-    const app = create();
-    expect(() => {
-      app.model({
-        namespace: '_',
-        subscriptions: [],
-      });
-    }).toThrow(/\[app\.model\] subscriptions should be undefined or plain object/);
-    expect(() => {
-      app.model({
-        namespace: '_',
-        subscriptions: '_',
-      });
-    }).toThrow(/\[app\.model\] subscriptions should be undefined or plain object/);
-    expect(() => {
-      app.model({
-        namespace: '_',
-      });
-    }).toNotThrow();
-  });
-
   it('dispatch action', () => {
     const app = create();
     app.model({

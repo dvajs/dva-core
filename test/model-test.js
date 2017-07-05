@@ -3,25 +3,6 @@ import EventEmitter from 'events';
 import { create } from '../src/index';
 
 describe('app.model', () => {
-  it('namespace: namespace should be defined', () => {
-    const app = create();
-    expect(() => {
-      app.model({});
-    }).toThrow(/\[app\.model\] namespace should be defined/);
-  });
-
-  it('namespace: unique error', () => {
-    const app = create();
-    expect(() => {
-      app.model({
-        namespace: 'repeat',
-      });
-      app.model({
-        namespace: 'repeat',
-      });
-    }).toThrow(/\[app\.model\] namespace should be unique/);
-  });
-
   it('dynamic model', () => {
     let count = 0;
 

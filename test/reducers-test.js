@@ -2,34 +2,6 @@ import expect from 'expect';
 import { create } from '../src/index';
 
 describe('reducers', () => {
-  it('type error', () => {
-    const app = create();
-    expect(() => {
-      app.model({
-        namespace: '_array',
-        reducers: [{}, () => {}],
-      });
-    }).toNotThrow();
-    expect(() => {
-      app.model({
-        namespace: '_object',
-        reducers: {},
-      });
-    }).toNotThrow();
-    expect(() => {
-      app.model({
-        namespace: '_neither',
-        reducers: '_',
-      });
-    }).toThrow(/\[app\.model\] reducers should be undefined, plain object or array/);
-    expect(() => {
-      app.model({
-        namespace: '_none',
-        reducers: [],
-      });
-    }).toThrow(/\[app\.model\] reducers with array should be \[Object, Function\]/);
-  });
-
   it('enhancer', () => {
     function enhancer(reducer) {
       return (state, action) => {
