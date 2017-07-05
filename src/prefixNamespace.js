@@ -2,7 +2,7 @@ import warning from 'warning';
 import { isArray } from './utils';
 import { NAMESPACE_SEP } from './constants';
 
-function _namespace(obj, namespace, type) {
+function prefix(obj, namespace, type) {
   return Object.keys(obj).reduce((memo, key) => {
     warning(
       key.indexOf(`${namespace}${NAMESPACE_SEP}`) !== 0,
@@ -23,13 +23,13 @@ export default function prefixNamespace(model) {
 
   if (reducers) {
     if (isArray(reducers)) {
-      model.reducers[0] = _namespace(reducers[0], namespace, 'reducer');
+      model.reducers[0] = prefix(reducers[0], namespace, 'reducer');
     } else {
-      model.reducers = _namespace(reducers, namespace, 'reducer');
+      model.reducers = prefix(reducers, namespace, 'reducer');
     }
   }
   if (effects) {
-    model.effects = _namespace(effects, namespace, 'effect');
+    model.effects = prefix(effects, namespace, 'effect');
   }
   return model;
 }

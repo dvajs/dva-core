@@ -25,7 +25,7 @@ export default function checkModel(model, existModels) {
     `[app.model] namespace should be unique`,
   );
 
-  // state
+  // state 可以为任意值
 
   // reducers 可以为空，PlainObject 或者数组
   invariant(
@@ -49,4 +49,14 @@ export default function checkModel(model, existModels) {
     !subscriptions || isPlainObject(subscriptions),
     `[app.model] subscriptions should be undefined or plain object, but got ${typeof subscriptions}`,
   );
+
+  // subscription 必须为函数
+  invariant(
+    !subscriptions || isAllFunction(subscriptions),
+    `[app.model] subscription should be function`,
+  );
+}
+
+function isAllFunction(obj) {
+  return Object.keys(obj).every(key => isFunction(obj[key]));
 }

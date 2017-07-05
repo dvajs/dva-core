@@ -1,7 +1,7 @@
 {
-  "name": "dva",
-  "version": "2.0.0-beta.1",
-  "description": "Redux and redux-saga based, lightweight and elm-style framework.",
+  "name": "dva-core",
+  "version": "0.1.0",
+  "description": "The core lightweight library for dva, based on redux and redux-saga.",
   "repository": {
     "type": "git",
     "url": "https://github.com/dvajs/dva-core"
@@ -9,14 +9,14 @@
   "homepage": "https://github.com/dvajs/dva-core",
   "keywords": [
     "dva",
+    "dva-core",
     "redux",
     "redux-saga",
     "elm",
     "framework",
     "react",
     "react-native",
-    "frontend",
-    "ant"
+    "frontend"
   ],
   "authors": [
     "chencheng <sorrycc@gmail.com> (https://github.com/sorrycc)"

@@ -1,21 +1,32 @@
 import invariant from 'invariant';
-import {
-  isPlainObject,
-} from './utils';
+import { isPlainObject } from './utils';
 
-class Plugin {
+const hooks = [
+  'onError',
+  'onStateChange',
+  'onAction',
+  'onHmr',
+  'onReducer',
+  'onEffect',
+  'extraReducers',
+  'extraEnhancers',
+];
 
+export function filterHooks(obj) {
+  return Object.keys(obj).reduce((memo, key) => {
+    if (hooks.indexOf(key) > -1) {
+      memo[key] = obj[key];
+    }
+    return memo;
+  }, {});
+}
+
+export default class Plugin {
   constructor() {
-    this.hooks = {
-      onError: [],
-      onStateChange: [],
-      onAction: [],
-      onHmr: [],
-      onReducer: [],
-      onEffect: [],
-      extraReducers: [],
-      extraEnhancers: [],
-    };
+    this.hooks = hooks.reduce((memo, key) => {
+      memo[key] = [];
+      return memo;
+    }, {});
   }
 
   use(plugin) {
@@ -54,22 +65,28 @@ class Plugin {
     const hooks = this.hooks;
     invariant(key in hooks, `plugin.get: hook ${key} cannot be got`);
     if (key === 'extraReducers') {
-      let ret = {};
-      for (const reducerObj of hooks[key]) {
-        ret = { ...ret, ...reducerObj };
-      }
-      return ret;
+      return getExtraReducers(hooks[key]);
     } else if (key === 'onReducer') {
-      return function (reducer) {
-        for (const reducerEnhancer of hooks[key]) {
-          reducer = reducerEnhancer(reducer);
-        }
-        return reducer;
-      };
+      return getOnReducer(hooks[key]);
     } else {
       return hooks[key];
     }
   }
 }
 
-export default Plugin;
+function getExtraReducers(hook) {
+  let ret = {};
+  for (const reducerObj of hook) {
+    ret = { ...ret, ...reducerObj };
+  }
+  return ret;
+}
+
+function getOnReducer(hook) {
+  return function (reducer) {
+    for (const reducerEnhancer of hook) {
+      reducer = reducerEnhancer(reducer);
+    }
+    return reducer;
+  };
+}
