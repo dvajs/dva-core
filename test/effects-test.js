@@ -39,7 +39,7 @@ describe('effects', () => {
       effects: {
         *addDelay({ payload }, { put, call }) {
           yield call(delay, 100);
-          yield put({ type: 'count/add', payload });
+          yield put({ type: 'add', payload });
         },
       },
     });

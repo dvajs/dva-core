@@ -77,13 +77,16 @@ function getWatcher(key, _effect, model, onError, onEffect) {
 }
 
 function createEffects(model) {
-  function put(action) {
-    const { type } = action;
+  function assertAction(type, name) {
     invariant(type, 'dispatch: action should be a plain Object with type');
     warning(
       type.indexOf(`${model.namespace}${NAMESPACE_SEP}`) !== 0,
-      `effects.put: ${type} should not be prefixed with namespace ${model.namespace}`,
+      `[${name}] ${type} should not be prefixed with namespace ${model.namespace}`,
     );
+  }
+  function put(action) {
+    const { type } = action;
+    assertAction(type, 'sagaEffects.put');
     return sagaEffects.put({ ...action, type: prefixType(type, model) });
   }
   return { ...sagaEffects, put };
