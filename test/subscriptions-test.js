@@ -30,7 +30,7 @@ describe('subscriptions', () => {
       },
       subscriptions: {
         setup({ dispatch }) {
-          dispatch({ type: 'count/add', payload: 2 });
+          dispatch({ type: 'add', payload: 2 });
         },
       },
     });

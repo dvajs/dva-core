@@ -52,6 +52,35 @@ describe('effects', () => {
     }, 200);
   });
 
+  it('take', (done) => {
+    const app = create();
+    app.model({
+      namespace: 'count',
+      state: 0,
+      reducers: {
+        add(state, { payload }) { return state + payload || 1; },
+      },
+      effects: {
+        *addDelay({ payload }, { put, call }) {
+          yield call(delay, payload.delay || 100);
+          yield put({ type: 'add', payload: payload.amount });
+        },
+        *test(action, { put, select, take }) {
+          yield put({ type: 'addDelay', payload: { amount: 2 } });
+          yield take('addDelay/@@end');
+          const count = yield select(state => state.count);
+          yield put({ type: 'addDelay', payload: { amount: count, delay: 0 } });
+        },
+      },
+    });
+    app.start();
+    app._store.dispatch({ type: 'count/test' });
+    setTimeout(() => {
+      expect(app._store.getState().count).toEqual(4);
+      done();
+    }, 300);
+  });
+
   it('dispatch action for other models', () => {
     const app = create();
     app.model({
@@ -176,7 +205,6 @@ describe('effects', () => {
     }, 200);
   });
 
-
   it('type: watcher', (done) => {
     const watcher = { type: 'watcher' };
     const app = create();
@@ -189,7 +217,7 @@ describe('effects', () => {
       effects: {
         addWatcher: [function*({ take, put, call }) {
           while (true) {
-            const { payload } = yield take('add');
+            const { payload } = yield take('addWatcher');
             yield call(delay, 100);
             yield put({ type: 'add', payload });
           }
@@ -199,8 +227,8 @@ describe('effects', () => {
     app.start();
 
     // Only catch the first one.
-    app._store.dispatch({ type: 'add', payload: 2 });
-    app._store.dispatch({ type: 'add', payload: 3 });
+    app._store.dispatch({ type: 'count/addWatcher', payload: 2 });
+    app._store.dispatch({ type: 'count/addWatcher', payload: 3 });
 
     setTimeout(() => {
       expect(app._store.getState().count).toEqual(2);
@@ -237,14 +265,14 @@ describe('effects', () => {
 
     app.use({
       extraReducers: {
-        loading(state, action) {
+        loading(state = false, action) {
           switch (action.type) {
             case SHOW:
               return true;
             case HIDE:
               return false;
             default:
-              return false;
+              return state;
           }
         },
       },

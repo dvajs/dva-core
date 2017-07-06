@@ -50,7 +50,9 @@ function getWatcher(key, _effect, model, onError, onEffect) {
 
   function *sagaWithCatch(...args) {
     try {
+      yield sagaEffects.put({ type: `${key}${NAMESPACE_SEP}@@start` });
       yield effect(...args.concat(createEffects(model)));
+      yield sagaEffects.put({ type: `${key}${NAMESPACE_SEP}@@end` });
     } catch (e) {
       onError(e);
     }
@@ -89,7 +91,15 @@ function createEffects(model) {
     assertAction(type, 'sagaEffects.put');
     return sagaEffects.put({ ...action, type: prefixType(type, model) });
   }
-  return { ...sagaEffects, put };
+  function take(type) {
+    if (typeof type === 'string') {
+      assertAction(type, 'sagaEffects.take');
+      return sagaEffects.take(prefixType(type, model));
+    } else {
+      return sagaEffects.take(type);
+    }
+  }
+  return { ...sagaEffects, put, take };
 }
 
 function applyOnEffect(fns, effect, model, key) {
