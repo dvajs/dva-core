@@ -28,10 +28,6 @@ describe('app.model', () => {
         },
       },
       effects: {
-        *add() {
-          yield 1;
-          count += 1;
-        },
       },
       subscriptions: {
         setup() {
@@ -49,9 +45,6 @@ describe('app.model', () => {
     const state = app._store.getState();
     expect(state.users).toEqual(['foo']);
     expect(state.tasks).toEqual(['foo']);
-
-    // effects
-    expect(count).toEqual(2);
   });
 
   it('don\'t inject if exists', () => {

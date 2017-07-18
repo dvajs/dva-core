@@ -7,6 +7,7 @@ import Plugin, { filterHooks } from './Plugin';
 import createStore from './createStore';
 import getSaga from './getSaga';
 import getReducer from './getReducer';
+import createPromiseMiddleware from './createPromiseMiddleware';
 import {
   run as runSubscription,
   unlisten as unlistenSubscription,
@@ -45,7 +46,6 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
     model,
     start,
   };
-
   return app;
 
   /**
@@ -77,7 +77,7 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
       store.replaceReducer(createReducer(store.asyncReducers));
     }
     if (m.effects) {
-      store.runSaga(getSaga(m.effects, m, onError, plugin.get('onEffect')));
+      store.runSaga(app._getSaga(m.effects, m, onError, plugin.get('onEffect')));
     }
     if (m.subscriptions) {
       unlisteners[m.namespace] = runSubscription(m.subscriptions, m, app, onError);
@@ -131,11 +131,18 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
     };
 
     const sagaMiddleware = createSagaMiddleware();
+    const {
+      middleware: promiseMiddleware,
+      resolve,
+      reject,
+    } = createPromiseMiddleware(app);
+    app._getSaga = getSaga.bind(null, resolve, reject);
+
     const sagas = [];
     const reducers = { ...initialReducer };
     for (const m of app._models) {
       reducers[m.namespace] = getReducer(m.reducers, m.state);
-      if (m.effects) sagas.push(getSaga(m.effects, m, onError, plugin.get('onEffect')));
+      if (m.effects) sagas.push(app._getSaga(m.effects, m, onError, plugin.get('onEffect')));
     }
     const reducerEnhancer = plugin.get('onReducer');
     const extraReducers = plugin.get('extraReducers');
@@ -151,6 +158,7 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
       plugin,
       createOpts,
       sagaMiddleware,
+      promiseMiddleware,
     });
 
     // Extend store

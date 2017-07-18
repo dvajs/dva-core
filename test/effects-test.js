@@ -328,5 +328,40 @@ describe('effects', () => {
       done();
     }, 200);
   });
+
+  it('return Promise', (done) => {
+    const app = create();
+    app.model({
+      namespace: 'count',
+      state: 0,
+      reducers: {
+        add(state, { payload }) { return state + payload || 1; },
+      },
+      effects: {
+        *addDelay({ payload }, { put, call, select }) {
+          yield call(delay, payload.delay || 100);
+          yield put({ type: 'add', payload: payload.amount });
+          return yield select(state => state.count);
+        },
+      },
+    });
+    app.start();
+    const p1 = app._store.dispatch({
+      type: 'count/addDelay',
+      payload: { amount: 2 },
+    });
+    const p2 = app._store.dispatch({
+      type: 'count/add',
+      payload: 2,
+    });
+    expect(p1 instanceof Promise).toEqual(true);
+    expect(p2).toEqual({ type: 'count/add', payload: 2 });
+    expect(app._store.getState().count).toEqual(2);
+    p1.then((count) => {
+      expect(count).toEqual(4);
+      expect(app._store.getState().count).toEqual(4);
+      done();
+    });
+  });
 });
 

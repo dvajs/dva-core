@@ -9,6 +9,7 @@ export default function ({
   initialState,
   plugin,
   sagaMiddleware,
+  promiseMiddleware,
   createOpts: {
     setupMiddlewares = returnSelf,
   },
@@ -23,6 +24,7 @@ export default function ({
   const extraMiddlewares = plugin.get('onAction');
   const middlewares = setupMiddlewares([
     sagaMiddleware,
+    promiseMiddleware,
     ...flatten(extraMiddlewares),
   ]);
 
