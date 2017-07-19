@@ -10,7 +10,3 @@ The core lightweight library for dva, based on redux and redux-saga.
 
 ---
 
-## BREAK CHANGES
-
-* 同名 reducer 和 effect 不会 fallthrough，仅执行 effect
-
