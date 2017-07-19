@@ -25,7 +25,6 @@
   "bugs": {
     "url": "https://github.com/dvajs/dva/issues"
   },
-  "main": "lib/index.js",
   "scripts": {
     "test": "npm run lint && NODE_ENV=test nyc mocha --no-timeouts",
     "debug": "mocha --require babel-register --no-timeouts",
