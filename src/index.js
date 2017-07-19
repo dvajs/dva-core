@@ -12,6 +12,7 @@ import {
   run as runSubscription,
   unlisten as unlistenSubscription,
 } from './subscription';
+import { noop } from './utils';
 
 // Internal model to update global state when do unmodel
 const dvaModel = {
@@ -31,6 +32,7 @@ const dvaModel = {
 export function create(hooksAndOpts = {}, createOpts = {}) {
   const {
     initialReducer,
+    setupApp = noop,
   } = createOpts;
 
   const plugin = new Plugin();
@@ -175,6 +177,9 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
 
     // Run sagas
     sagas.forEach(sagaMiddleware.run);
+
+    // Setup app
+    setupApp(app);
 
     // Run subscriptions
     const unlisteners = {};
