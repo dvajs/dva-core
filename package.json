@@ -49,8 +49,12 @@
     "redux-saga": "^0.15.4",
     "warning": "^3.0.0"
   },
+  "peerDependencies": {
+    "redux": "3.x"
+  },
   "devDependencies": {
     "expect": "^1.20.2",
+    "redux": "^3.7.2",
     "ruban": "^0.1.0"
   }
 }
