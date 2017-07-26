@@ -1,6 +1,6 @@
 {
   "name": "dva-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The core lightweight library for dva, based on redux and redux-saga.",
   "repository": {
     "type": "git",
