@@ -57,6 +57,41 @@ describe('reducers', () => {
     }).toThrow(/\[app\.start\] extraReducers is conflict with other reducers/);
   });
 
+  it('onReducer with saveAndLoad', () => {
+    let savedState = null;
+    const saveAndLoad = r => (state, action) => {
+      const newState = r(state, action);
+      if (action.type === 'save') {
+        savedState = newState;
+      }
+      if (action.type === 'load') {
+        return savedState;
+      }
+      return newState;
+    };
+    const app = create({
+      onReducer: saveAndLoad,
+    });
+    app.model({
+      namespace: 'count',
+      state: 0,
+      reducers: {
+        add(state) { return state + 1; },
+      },
+    });
+    app.start();
+
+    app._store.dispatch({ type: 'count/add' });
+    expect(app._store.getState().count).toEqual(1);
+    app._store.dispatch({ type: 'save' });
+    expect(app._store.getState().count).toEqual(1);
+    app._store.dispatch({ type: 'count/add' });
+    app._store.dispatch({ type: 'count/add' });
+    expect(app._store.getState().count).toEqual(3);
+    app._store.dispatch({ type: 'load' });
+    expect(app._store.getState().count).toEqual(1);
+  });
+
   it('onReducer', () => {
     const undo = r => (state, action) => {
       const newState = r(state, action);
